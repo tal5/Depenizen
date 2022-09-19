@@ -6,17 +6,17 @@ import com.denizenscript.depenizen.bukkit.clientizen.Channels;
 import com.denizenscript.depenizen.bukkit.clientizen.DataSerializer;
 import com.denizenscript.depenizen.bukkit.clientizen.NetworkManager;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ClientizenEventManager {
 
-    private static final Set<ClientizenScriptEvent> clientizenEvents = new HashSet<>();
+    private static final Map<String, ClientizenScriptEvent> clientizenEvents = new HashMap<>();
     public static DataSerializer eventsSerializer;
 
     public static void init() {
         NetworkManager.registerInChannel(Channels.RECEIVE_EVENT, ((player, message) -> {
-            ((ClientizenScriptEvent) ScriptEvent.eventLookup.get(message.readString())).fireInternal(player, message);
+            clientizenEvents.get(message.readString()).fireInternal(player, message);
         }));
     }
 
@@ -24,7 +24,7 @@ public class ClientizenEventManager {
         try {
             ClientizenScriptEvent instance = event.getConstructor().newInstance();
             ScriptEvent.registerScriptEvent(instance);
-            clientizenEvents.add(instance);
+            clientizenEvents.put(instance.getName(), instance);
         }
         catch (Exception ex) {
             Debug.echoError("Something went wrong while registering clientizen event '" + event.getName() + "':");
@@ -40,11 +40,12 @@ public class ClientizenEventManager {
     private static void reloadEvents() {
         int size = 0;
         DataSerializer eventData = new DataSerializer();
-        for (ClientizenScriptEvent event : clientizenEvents) {
+        for (Map.Entry<String, ClientizenScriptEvent> entry : clientizenEvents.entrySet()) {
+            ClientizenScriptEvent event = entry.getValue();
             if (!event.isEnabled()) {
                 return;
             }
-            eventData.writeString(event.getName());
+            eventData.writeString(entry.getKey());
             event.write(eventData);
             size++;
         }
