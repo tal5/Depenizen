@@ -1,7 +1,6 @@
 package com.denizenscript.depenizen.bukkit.clientizen.events;
 
 import com.denizenscript.denizencore.events.ScriptEvent;
-import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.depenizen.bukkit.clientizen.Channels;
 import com.denizenscript.depenizen.bukkit.clientizen.DataSerializer;

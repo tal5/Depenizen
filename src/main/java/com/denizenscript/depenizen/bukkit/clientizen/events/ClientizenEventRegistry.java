@@ -4,5 +4,4 @@ public class ClientizenEventRegistry {
 
     public static void registerEvents() {
     }
-
 }
