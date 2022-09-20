@@ -1,12 +1,10 @@
 package com.denizenscript.depenizen.bukkit.clientizen.events;
 
-import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.objects.ObjectTag;
 import com.denizenscript.denizencore.objects.core.ElementTag;
-import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.depenizen.bukkit.clientizen.DataDeserializer;
 import com.denizenscript.depenizen.bukkit.clientizen.DataSerializer;
-import org.bukkit.entity.Player;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,6 +20,7 @@ public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
     public PlayerPressesKeyScriptEvent() {
         registerCouldMatcher("player presses key");
         registerSwitches("key");
+        id = "PlayerPressesKey";
     }
 
     @Override
@@ -47,6 +46,14 @@ public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
     }
 
     @Override
+    public ObjectTag getContext(String name) {
+        switch (name) {
+            case "key": return new ElementTag(key.name());
+        }
+        return super.getContext(name);
+    }
+
+    @Override
     public void fire(DataDeserializer data) {
         key = KeyboardKeys.keysByID.get(data.readInt());
         fire();
@@ -55,11 +62,6 @@ public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
     @Override
     public void write(DataSerializer serializer) {
         serializer.writeIntList(listenToKeys);
-    }
-
-    @Override
-    public ScriptEntryData getScriptEntryData() {
-        return new BukkitScriptEntryData(player);
     }
     
     enum KeyboardKeys {
@@ -199,9 +201,6 @@ public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
         }
 
         public static Set<Integer> getKeysMatching(String matcher) {
-            if (matcher == null) {
-                return null;
-            }
             Set<Integer> result = new HashSet<>();
             MatchHelper matchHelper = ScriptEvent.createMatcher(matcher);
             for (Map.Entry<String, KeyboardKeys> entry : alternateNames.entrySet()) {

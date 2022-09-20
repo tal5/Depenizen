@@ -1,6 +1,8 @@
 package com.denizenscript.depenizen.bukkit.clientizen.events;
 
+import com.denizenscript.denizen.utilities.implementation.BukkitScriptEntryData;
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.scripts.ScriptEntryData;
 import com.denizenscript.depenizen.bukkit.clientizen.DataDeserializer;
 import com.denizenscript.depenizen.bukkit.clientizen.DataSerializer;
 import org.bukkit.entity.Player;
@@ -8,6 +10,7 @@ import org.bukkit.entity.Player;
 public abstract class ClientizenScriptEvent extends ScriptEvent {
     private boolean enabled;
     public Player player;
+    public String id;
 
     public boolean isEnabled() {
         return enabled;
@@ -31,4 +34,9 @@ public abstract class ClientizenScriptEvent extends ScriptEvent {
     public void fire(DataDeserializer data) {}
 
     public void write(DataSerializer serializer) {}
+
+    @Override
+    public ScriptEntryData getScriptEntryData() {
+        return new BukkitScriptEntryData(player);
+    }
 }

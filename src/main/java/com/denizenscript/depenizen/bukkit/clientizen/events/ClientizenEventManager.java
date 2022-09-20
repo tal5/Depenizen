@@ -1,6 +1,7 @@
 package com.denizenscript.depenizen.bukkit.clientizen.events;
 
 import com.denizenscript.denizencore.events.ScriptEvent;
+import com.denizenscript.denizencore.utilities.CoreConfiguration;
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.depenizen.bukkit.clientizen.Channels;
 import com.denizenscript.depenizen.bukkit.clientizen.DataSerializer;
@@ -16,7 +17,13 @@ public class ClientizenEventManager {
 
     public static void init() {
         NetworkManager.registerInChannel(Channels.RECEIVE_EVENT, ((player, message) -> {
-            clientizenEvents.get(message.readString()).fireInternal(player, message);
+            String id = message.readString();
+            ClientizenScriptEvent event = clientizenEvents.get(id);
+            if (event == null) {
+                Debug.echoError("Received invalid event '" + id + "' from " + player.getName());
+                return;
+            }
+            event.fireInternal(player, message);
         }));
     }
 
@@ -42,12 +49,11 @@ public class ClientizenEventManager {
         DataSerializer eventData = new DataSerializer();
         for (Map.Entry<String, ClientizenScriptEvent> entry : clientizenEvents.entrySet()) {
             ClientizenScriptEvent event = entry.getValue();
-            if (!event.isEnabled()) {
-                return;
+            if (event.isEnabled()) {
+                eventData.writeString(entry.getKey());
+                event.write(eventData);
+                size++;
             }
-            eventData.writeString(entry.getKey());
-            event.write(eventData);
-            size++;
         }
         eventsSerializer = new DataSerializer().writeInt(size).writeBytes(eventData.toByteArray());
     }
