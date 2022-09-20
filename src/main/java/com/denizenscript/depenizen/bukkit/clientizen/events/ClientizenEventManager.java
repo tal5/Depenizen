@@ -20,11 +20,12 @@ public class ClientizenEventManager {
             String id = message.readString();
             ClientizenScriptEvent event = clientizenEvents.get(id);
             if (event == null) {
-                Debug.echoError("Received invalid event '" + id + "' from " + player.getName());
+                Debug.echoError("Received invalid event '" + id + "' from '" + player.getName() + "'.");
                 return;
             }
             event.fireInternal(player, message);
         });
+        ScriptEvent.notNameParts.add("ClientizenEvent");
     }
 
     public static void registerEvent(Class<? extends ClientizenScriptEvent> eventClass) {
@@ -53,7 +54,7 @@ public class ClientizenEventManager {
         DataSerializer eventData = new DataSerializer();
         for (Map.Entry<String, ClientizenScriptEvent> entry : clientizenEvents.entrySet()) {
             ClientizenScriptEvent event = entry.getValue();
-            if (event.isEnabled()) {
+            if (event.enabled) {
                 eventData.writeString(entry.getKey());
                 event.write(eventData);
                 size++;

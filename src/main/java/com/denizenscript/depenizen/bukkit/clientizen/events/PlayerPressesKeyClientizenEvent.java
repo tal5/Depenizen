@@ -11,13 +11,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
+public class PlayerPressesKeyClientizenEvent extends ClientizenScriptEvent {
 
     public static Set<Integer> listenToKeys = new HashSet<>();
 
     public KeyboardKeys key;
 
-    public PlayerPressesKeyScriptEvent() {
+    public PlayerPressesKeyClientizenEvent() {
         registerCouldMatcher("player presses key");
         registerSwitches("key");
         id = "PlayerPressesKey";
@@ -29,6 +29,14 @@ public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
             return false;
         }
         return super.matches(path);
+    }
+
+    @Override
+    public ObjectTag getContext(String name) {
+        switch (name) {
+            case "key": return new ElementTag(key.name());
+        }
+        return super.getContext(name);
     }
 
     @Override
@@ -46,11 +54,9 @@ public class PlayerPressesKeyScriptEvent extends ClientizenScriptEvent {
     }
 
     @Override
-    public ObjectTag getContext(String name) {
-        switch (name) {
-            case "key": return new ElementTag(key.name());
-        }
-        return super.getContext(name);
+    public void destroy() {
+        super.destroy();
+        listenToKeys.clear();
     }
 
     @Override

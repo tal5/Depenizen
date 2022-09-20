@@ -8,13 +8,10 @@ import com.denizenscript.depenizen.bukkit.clientizen.DataSerializer;
 import org.bukkit.entity.Player;
 
 public abstract class ClientizenScriptEvent extends ScriptEvent {
-    private boolean enabled;
+
+    public boolean enabled;
     public Player player;
     public String id;
-
-    public boolean isEnabled() {
-        return enabled;
-    }
 
     @Override
     public void init() {
