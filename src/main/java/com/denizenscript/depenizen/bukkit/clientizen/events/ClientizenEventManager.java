@@ -16,7 +16,7 @@ public class ClientizenEventManager {
     public static DataSerializer eventsSerializer;
 
     public static void init() {
-        NetworkManager.registerInChannel(Channels.RECEIVE_EVENT, ((player, message) -> {
+        NetworkManager.registerInChannel(Channels.RECEIVE_EVENT, (player, message) -> {
             String id = message.readString();
             ClientizenScriptEvent event = clientizenEvents.get(id);
             if (event == null) {
@@ -24,17 +24,21 @@ public class ClientizenEventManager {
                 return;
             }
             event.fireInternal(player, message);
-        }));
+        });
     }
 
-    public static void registerEvent(Class<? extends ClientizenScriptEvent> event) {
+    public static void registerEvent(Class<? extends ClientizenScriptEvent> eventClass) {
         try {
-            ClientizenScriptEvent instance = event.getConstructor().newInstance();
+            ClientizenScriptEvent instance = eventClass.getConstructor().newInstance();
+            if (clientizenEvents.containsKey(instance.id)) {
+                Debug.echoError("Tried registering event '" + instance.id + "' but an event with that ID is already registered.");
+                return;
+            }
             ScriptEvent.registerScriptEvent(instance);
-            clientizenEvents.put(instance.getName(), instance);
+            clientizenEvents.put(instance.id, instance);
         }
         catch (Exception ex) {
-            Debug.echoError("Something went wrong while registering clientizen event '" + event.getName() + "':");
+            Debug.echoError("Something went wrong while registering clientizen event '" + eventClass.getName() + "':");
             Debug.echoError(ex);
         }
     }
