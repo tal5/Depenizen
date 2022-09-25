@@ -28,8 +28,11 @@ public abstract class ClientizenScriptEvent extends ScriptEvent {
         fire(data);
     }
 
-    public void fire(DataDeserializer data) {}
+    public void fire(DataDeserializer data) {
+        fire();
+    }
 
+    // write isn't abstract to avoid events that don't need to send data having empty impls
     public void write(DataSerializer serializer) {}
 
     @Override
