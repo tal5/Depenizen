@@ -1,7 +1,8 @@
-package com.denizenscript.depenizen.bukkit.clientizen;
+package com.denizenscript.depenizen.bukkit.clientizen.network;
 
 import com.denizenscript.denizencore.utilities.debugging.Debug;
 import com.denizenscript.depenizen.bukkit.Depenizen;
+import com.denizenscript.depenizen.bukkit.clientizen.ClientizenSupport;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -32,6 +33,13 @@ public class NetworkManager implements PluginMessageListener {
         }
         Bukkit.getMessenger().registerIncomingPluginChannel(Depenizen.instance, channel, instance);
         registeredReceivers.put(channel, receiver);
+    }
+
+    public static void unregisterInChannel(String channel) {
+        if (registeredReceivers.containsKey(channel)) {
+            Bukkit.getMessenger().unregisterIncomingPluginChannel(Depenizen.instance, channel);
+            registeredReceivers.remove(channel);
+        }
     }
 
     public static void broadcast(String channel, DataSerializer message) {
