@@ -35,13 +35,6 @@ public class NetworkManager implements PluginMessageListener {
         registeredReceivers.put(channel, receiver);
     }
 
-    public static void unregisterInChannel(String channel) {
-        if (registeredReceivers.containsKey(channel)) {
-            Bukkit.getMessenger().unregisterIncomingPluginChannel(Depenizen.instance, channel);
-            registeredReceivers.remove(channel);
-        }
-    }
-
     public static void broadcast(String channel, DataSerializer message) {
         for (UUID uuid : ClientizenSupport.clientizenPlayers) {
             send(channel, Bukkit.getPlayer(uuid), message);

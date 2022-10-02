@@ -31,7 +31,10 @@ public class ClientizenEventScriptEvent extends ScriptEvent {
 
     @Override
     public boolean matches(ScriptPath path) {
-        return runGenericSwitchCheck(path, "id", id);
+        if (!runGenericSwitchCheck(path, "id", id)) {
+            return false;
+        }
+        return super.matches(path);
     }
 
     @Override
@@ -52,6 +55,7 @@ public class ClientizenEventScriptEvent extends ScriptEvent {
             return;
         }
         player = fromPlayer;
+        id = data.readString();
         contextMap = new MapTag();
         for (Map.Entry<String, String> entry : data.readStringMap().entrySet()) {
             contextMap.putObject(entry.getKey(), ObjectFetcher.pickObjectFor(entry.getValue(), CoreUtilities.noDebugContext));
