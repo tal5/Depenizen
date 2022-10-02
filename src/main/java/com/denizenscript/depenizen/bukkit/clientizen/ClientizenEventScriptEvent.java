@@ -50,11 +50,11 @@ public class ClientizenEventScriptEvent extends ScriptEvent {
         return super.getContext(name);
     }
 
-    public void tryFire(Player fromPlayer, DataDeserializer data) {
+    public void tryFire(Player source, DataDeserializer data) {
         if (!enabled) {
             return;
         }
-        player = fromPlayer;
+        player = source;
         id = data.readString();
         contextMap = new MapTag();
         for (Map.Entry<String, String> entry : data.readStringMap().entrySet()) {
