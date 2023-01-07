@@ -45,10 +45,6 @@ public class ClientRunCommand extends AbstractCommand {
                     && arg.getPrefix().getRawValue().startsWith("def.")) {
                 defMap.putObject(arg.getPrefix().getRawValue().substring("def.".length()), arg.object);
             }
-            else if (!scriptEntry.hasObject("script")
-                    && arg.limitToOnlyPrefix("script")) {
-                scriptEntry.addObject("script", arg.asElement());
-            }
             else if (!arg.hasPrefix() && arg.getRawValue().startsWith("def.") && arg.getRawValue().contains(":")) {
                 int colon = arg.getRawValue().indexOf(':');
                 defMap.putObject(arg.getRawValue().substring("def.".length(), colon), new ElementTag(arg.getRawValue().substring(colon + 1)));
@@ -56,6 +52,9 @@ public class ClientRunCommand extends AbstractCommand {
             else if (!scriptEntry.hasObject("path")
                     && arg.matchesPrefix("path")) {
                 scriptEntry.addObject("path", arg.asElement());
+            }
+            else if (!scriptEntry.hasObject("script")) {
+                scriptEntry.addObject("script", arg.asElement());
             }
             else {
                 arg.reportUnhandled();
