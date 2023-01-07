@@ -51,7 +51,7 @@ public class ClientRunCommand extends AbstractCommand {
             }
             else if (!scriptEntry.hasObject("path")
                     && arg.matchesPrefix("path")) {
-                scriptEntry.addObject("path", arg.asElement());
+                scriptEntry.addObject("path", arg.asElement().asString());
             }
             else if (!scriptEntry.hasObject("script")) {
                 scriptEntry.addObject("script", arg.asElement());
@@ -70,14 +70,14 @@ public class ClientRunCommand extends AbstractCommand {
 
     @Override
     public void execute(ScriptEntry scriptEntry) {
-        ElementTag path = scriptEntry.getElement("path");
+        String path = (String) scriptEntry.getObject("path");
         ElementTag script = scriptEntry.getElement("script");
         MapTag defMap = scriptEntry.getObjectTag("def_map");
         PlayerTag clientizenPlayer = scriptEntry.getObjectTag("player");
         if (scriptEntry.dbCallShouldDebug()) {
-            Debug.report(scriptEntry, getName(), script, clientizenPlayer, path, defMap);
+            Debug.report(scriptEntry, getName(), script, clientizenPlayer, db("path", path), defMap);
         }
-        Map<String, String> stringDefMap = null;
+        Map<String, String> stringDefMap = Map.of();
         if (defMap != null) {
             stringDefMap = new HashMap<>(defMap.map.size());
             for (Map.Entry<StringHolder, ObjectTag> entry : defMap.map.entrySet()) {
@@ -86,8 +86,8 @@ public class ClientRunCommand extends AbstractCommand {
         }
         DataSerializer runData = new DataSerializer()
                 .writeString(script.asString())
-                .writeString(path != null ? path.asString() : "")
-                .writeStringMap(stringDefMap != null ? stringDefMap : Map.of());
+                .writeNullable(path, DataSerializer::writeString)
+                .writeStringMap(stringDefMap);
         NetworkManager.send(Channels.RUN_CLIENT_SCRIPT, clientizenPlayer.getPlayerEntity(), runData);
     }
 }
