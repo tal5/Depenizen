@@ -23,7 +23,7 @@ public class ClientRunCommand extends AbstractCommand {
 
     public ClientRunCommand() {
         setName("clientrun");
-        setSyntax("clientrun [<script>] (path:<name>) (def.<name>:<value>/defmap:<map>)");
+        setSyntax("clientrun [<script>] (path:<name>) (def.<name>:<value>) (defmap:<map>)");
         setRequiredArguments(1, -1);
         allowedDynamicPrefixes = true;
     }
