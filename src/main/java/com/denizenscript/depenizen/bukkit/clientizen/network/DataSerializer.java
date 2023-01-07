@@ -21,6 +21,16 @@ public class DataSerializer {
         output = new DataOutputStream(outputStream);
     }
 
+    public DataSerializer writeBoolean(boolean bool) {
+        try {
+            output.writeBoolean(bool);
+        }
+        catch (IOException e) {
+            Debug.echoError(new IllegalStateException(e));
+        }
+        return this;
+    }
+
     public DataSerializer writeInt(int i) {
         try {
             output.writeInt(i);
